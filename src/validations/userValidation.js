@@ -1,49 +1,42 @@
-import Joi from 'joi'
-import { password, objectId, body, query, params } from './customValidation'
-const createUser = body({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().custom(password),
-    name: Joi.string().required(),
-    role: Joi.string().required().valid('user', 'admin'),
-})
+import { string, number, mixed } from 'yup'
+import { yupObject, typeObjectId, typePassword } from './customValidation'
 
+const createUser = {
+    email: string().required().email(),
+    password: typePassword,
+    name: string().required(),
+    role: mixed().oneOf(['user', 'admin']).required()
+}
 
-const getUsers = query({
-    name: Joi.string(),
-    role: Joi.string(),
-    sortBy: Joi.string(),
-    limit: Joi.number().integer(),
-    page: Joi.number().integer(),
-})
+const getUsers = {
+    name: string(),
+    role: string(),
+    sortBy: string(),
+    limit: number().integer(),
+    page: number().integer(),
+}
 
+const getUser = {
+    userId: typeObjectId('userId')
+}
 
-const getUser = params({
-    userId: Joi.string().custom(objectId),
-})
+const updateUser = {
+    userId: typeObjectId('userId'),
+    email: string().email(),
+    password: typePassword,
+    name: string(),
+    role: string(),
+}
 
-
-const updateUser = Object.assign(
-    params({
-        userId: Joi.required().custom(objectId),
-    }),
-    body({
-        email: Joi.string().email(),
-        password: Joi.string().custom(password),
-        name: Joi.string(),
-        role: Joi.string(),
-    })
-)
-
-
-const deleteUser = params({
-    userId: Joi.string().custom(objectId),
-})
+const deleteUser = {
+    userId: typeObjectId('userId'),
+}
 
 
 export default {
-    createUser,
-    getUsers,
-    getUser,
-    updateUser,
-    deleteUser,
+    createUser: yupObject(createUser),
+    getUsers: yupObject(getUsers),
+    getUser: yupObject(getUser),
+    updateUser: yupObject(updateUser),
+    deleteUser: yupObject(deleteUser),
 };

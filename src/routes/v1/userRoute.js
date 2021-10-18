@@ -1,19 +1,19 @@
 import express from 'express'
-import validate from '../../middlewares/validate'
+import validate from '../../middleware/validate'
 import userValidation from '../../validations/userValidation'
 import UserCtrl from '../../controllers/UserCtrl'
-import catchAsync from '../../utils/catchAsync'
+import asyncHandler from '../../utils/asyncHandler'
 const router = express.Router();
 
 router
     .route('/')
-    .post(validate(userValidation.createUser), catchAsync(UserCtrl.createUser))
-    .get(validate(userValidation.getUsers), catchAsync(UserCtrl.getUsers));
+    .post(validate(userValidation.createUser), asyncHandler(UserCtrl.createUser))
+    .get(validate(userValidation.getUsers), asyncHandler(UserCtrl.getUsers));
 
 router
     .route('/:userId')
-    .get(validate(userValidation.getUser), catchAsync(UserCtrl.getUser))
-    .patch(validate(userValidation.updateUser), catchAsync(UserCtrl.updateUser))
-    .delete(validate(userValidation.deleteUser), catchAsync(UserCtrl.deleteUser));
+    .get(validate(userValidation.getUser), asyncHandler(UserCtrl.getUser))
+    .patch(validate(userValidation.updateUser), asyncHandler(UserCtrl.updateUser))
+    .delete(validate(userValidation.deleteUser), asyncHandler(UserCtrl.deleteUser));
 
 export default router;
